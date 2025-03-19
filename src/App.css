@@ -1,0 +1,42 @@
+.track-img {
+  width: 300px;
+  color-scheme: only light;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+    margin: 15mm;
+  }
+  body {
+      /* width: 210mm; */
+      /* height: 297mm; */
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+  }
+  .page {
+      border: initial;
+      border-radius: initial;
+      width: initial;
+      min-height: initial;
+      box-shadow: initial;
+      background: initial;
+      page-break-after: always;
+  }
+
+  .hidden-print {
+    display: none !important;
+  }
+  .only-print {
+    display: contents !important;
+  }
+  .track-img {
+    width: 51mm;
+    color-scheme: only light;
+  }
+}
+
+.only-print {
+  display: none;
+}
