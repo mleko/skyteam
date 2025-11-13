@@ -1,6 +1,6 @@
 import { Card, Checkbox, Collapse, Form, Input, InputNumber, Radio, RadioChangeEvent, Select, Space, Switch, Typography } from "antd";
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { Module, SpaceData, TrackData, Turns } from "./Track";
+import { Module, SpaceData, TrackData, Turns } from "./types";
 import { replace } from "typescript-array-utils";
 
 interface ModuleOption {

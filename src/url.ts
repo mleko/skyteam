@@ -1,5 +1,6 @@
 import JsonURL from "@jsonurl/jsonurl";
-import {allFalse, allTrue, Color, Module, SpaceData, TrackData, Turns} from "./Track";
+import {allFalse, allTrue} from "./util";
+import {Color, Module, SpaceData, TrackData, Turns} from "./ApproachTrack/types";
 import {z} from 'zod'
 
 const zTurnL = z.union([z.literal("t"), z.literal("f")])
