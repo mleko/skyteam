@@ -10,6 +10,7 @@ export interface SpaceData {
     planeCount?: number
     trafficDice?: number
     turns: Turns
+    alarm?: boolean
 }
 
 interface TrackView {
@@ -25,6 +26,7 @@ interface SpaceView {
     clouds: boolean
     trafficDice: number
     turns: Turns
+    alarm: boolean
 }
 
 
@@ -60,6 +62,7 @@ function dataToView(data: TrackData): TrackView {
                 turns: dat.turns,
                 airport: data.takeOff ? idx === (n-1) : idx === 0,
                 clouds: !data.takeOff ? idx === (n-1) : idx === 0,
+                alarm: dat.alarm || false
             }
         })
     }
@@ -247,6 +250,9 @@ function Space(props: {idx: number, data: SpaceView, yOffset: number}): JSX.Elem
     }
     if (props.data.turns && !allTrue(props.data.turns) && !allFalse(props.data.turns)) {
         elements.push(...renderWinds(props.data.turns))
+    }
+    if (props.data.alarm) {
+        elements.push(<image key="alarm" href="assets/alarm.png" height={baseSize * 0.10} width={baseSize * 0.10} x={baseSize * 0.79} y={(baseSize * .17) / 2}/>)
     }
     return <g transform={`translate(0, ${props.idx * (spaceH+1) + yOffset})`}>{elements}</g>
 }

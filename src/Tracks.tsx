@@ -1,20 +1,31 @@
-import { Col, Row, Tabs } from "antd";
+import { Button, Col, Row, Space, Tabs } from "antd";
 import { Module, Track, TrackData } from "./Track";
 import { InputForm } from "./InputForm";
 import { replace } from "typescript-array-utils";
 import { EmptyTrack } from "./App";
 import { Content } from "antd/es/layout/layout";
+import {Tab} from "rc-tabs/lib/interface"
 
 export function Tracks(props: { tracks: TrackData[], setTracks: (tracks: TrackData[]) => any }) {
-    const tabs = props.tracks.map((val: TrackData, idx: number) => {
+    const tabs: Tab[] = props.tracks.map((val: TrackData, idx: number) => {
         return {
             key: "" + idx,
             children: <TrackRow track={val} setTrackData={(track: TrackData) => {
                 props.setTracks(replace(props.tracks, idx, track))
             }} />,
-            label: `${val.code} - ${val.name}`
+            label: `${val.code} - ${val.name}` as string|React.ReactNode,
+            closable: true
         }
     });
+    tabs.push({
+        key: "buttons",
+        children: <Space/>,
+        label: <>
+            <Button onClick={() => {props.setTracks(props.tracks.concat(EmptyTrack))}}>Add approach track</Button>
+            </>,
+        closable: false,
+        disabled: true,
+    })
     const onEdit = (
         targetKey: React.MouseEvent | React.KeyboardEvent | string,
         action: 'add' | 'remove',
@@ -27,7 +38,7 @@ export function Tracks(props: { tracks: TrackData[], setTracks: (tracks: TrackDa
             }))
         }
     };
-    return <Tabs items={tabs} onEdit={onEdit} type="editable-card" />
+    return <Tabs items={tabs} onEdit={onEdit} type="editable-card" hideAdd={true}/>
 }
 
 function TrackRow(props: { track: TrackData, setTrackData: (nData: TrackData) => any }) {

@@ -132,6 +132,11 @@ function SpaceInputForm(props: { space: SpaceData, idx: number, onChange: (s: Sp
                 props.onChange(Object.assign({}, s, { turns: value }))
             }}/>
         </Form.Item>
+        <Form.Item name={`alarm`} label="Alarm">
+            <Checkbox checked={props.space.alarm} style={{margin: 2}} onChange={(e) => {
+                props.onChange(Object.assign({}, s, { alarm: e.target.checked }))
+            }}/>
+        </Form.Item>
     </Card>
 }
 

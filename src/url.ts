@@ -4,6 +4,9 @@ import {z} from 'zod'
 
 const zTurnL = z.union([z.literal("t"), z.literal("f")])
 
+enum SpaceFlag {"alarm" = "alarm"}
+const zSpaceFlag = z.nativeEnum(SpaceFlag)
+
 const zTurn = z.tuple([
     zTurnL, zTurnL, zTurnL, zTurnL, zTurnL
 ])
@@ -11,7 +14,8 @@ const zTurn = z.tuple([
 const zExportSpace = z.object({
     pc: z.number().int().optional(),
     td: z.number().int().optional(),
-    trn: zTurn.optional()
+    trn: zTurn.optional(),
+    fg: z.array(zSpaceFlag).optional(),
 })
 
 const zExportTrack = z.object({
@@ -22,7 +26,7 @@ const zExportTrack = z.object({
     clr: z.union([z.nativeEnum(Color), z.literal("auto")]).optional(),
     x: z.object({
         takeOff: z.object({}).optional()
-    }).optional()
+    }).optional(),
 })
 
 type exportTrack = z.infer<typeof zExportTrack>
@@ -69,6 +73,13 @@ function toExport(tracks: TrackData[]): exportTrack[] {
                 if (!(allTrue(val.turns) || allFalse(val.turns))) {
                     sd.trn = val.turns.map((v) => v ? "t" : "f") as exportTurn
                 }
+                const flags: Array<SpaceFlag> = [];
+                if (val.alarm){
+                    flags.push(SpaceFlag.alarm)
+                }
+                if (flags.length){
+                    sd.fg = flags;
+                }
                 return sd
             }),
         }
@@ -97,6 +108,7 @@ function fromExport(tracks: exportTrack[]): TrackData[] {
                     turns: sVal.trn ? sVal.trn.map((v) => v === "t") as Turns : [true, true, true, true, true],
                     planeCount: sVal.pc || 0,
                     trafficDice: sVal.td || 0,
+                    alarm: (sVal.fg || []).indexOf(SpaceFlag.alarm) !== -1
                 }
             }),
             color: val.clr || undefined,
