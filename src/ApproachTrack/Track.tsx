@@ -16,6 +16,7 @@ interface SpaceView {
     trafficDice: number
     turns: Turns
     alarm: boolean
+    silence: boolean
 }
 
 function dataToView(data: TrackData): TrackView {
@@ -32,7 +33,8 @@ function dataToView(data: TrackData): TrackView {
                 turns: dat.turns,
                 airport: data.takeOff ? idx === (n-1) : idx === 0,
                 clouds: !data.takeOff ? idx === (n-1) : idx === 0,
-                alarm: dat.alarm || false
+                alarm: dat.alarm || false,
+                silence: dat.totalTrust || false
             }
         })
     }
@@ -44,12 +46,6 @@ export function Track(props: TrackData){
     const view = dataToView(props)
     return ( 
         <svg className="track-img" fill="pink" xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${spaceW} ${props.spaces.length * (spaceH+1) + spaceH/2-3}`}>
-            {/* <defs>
-                <radialGradient id="radial-gradient" cy="1.0" r="0.8">
-                    <stop offset="0%" stopColor="#00618d" />
-                    <stop offset="100%" stopColor="#05153f" />
-                </radialGradient>
-            </defs> */}
             <filter id="filter_black">
                 <feColorMatrix
                 in="SourceGraphic"
@@ -86,8 +82,8 @@ export function Track(props: TrackData){
                         0.05 0 0 0 0
                         0 0 0 0.70 0" />
             </filter>
-            {renderStrip(props.spaces.length, view.color)}
-            {renderHeader(props.name, props.code, props.modules)}
+            {renderStrip(view.spaces.length, view.color)}
+            {renderHeader(view.name, view.code, view.modules)}
             {renderSpaces(view.spaces, spaceH/2)}
         </svg>
     );
@@ -131,7 +127,6 @@ const spaceH = baseSize * 0.524
 const innerSpaceW = baseSize * 0.883
 const innerSpaceH = baseSize * 0.403
 
-
 function Space(props: {idx: number, data: SpaceView, yOffset: number}): JSX.Element {
     const {yOffset} = props
     const elements: any[] = []
@@ -142,16 +137,6 @@ function Space(props: {idx: number, data: SpaceView, yOffset: number}): JSX.Elem
         height={1}
         y={spaceH}
     />)
-    // elements.push(<rect
-    //     key="fg"
-    //     // fill="#003659"
-    //     fill="url(#radial-gradient)"
-    //     width={innerSpaceW}
-    //     height={innerSpaceH}
-    //     rx={15}
-    //     y={(spaceH-innerSpaceH)/2}
-    //     x={(spaceW-innerSpaceW)/2}
-    // />)
     elements.push(<image key="bfg" href="assets/bg.png" width={innerSpaceW} height={innerSpaceH} y={(spaceH-innerSpaceH)/2} x={(spaceW-innerSpaceW)/2}/>)
     elements.push(...renderPlanes(props.data.planeCount))
 
@@ -169,6 +154,9 @@ function Space(props: {idx: number, data: SpaceView, yOffset: number}): JSX.Elem
     }
     if (props.data.alarm) {
         elements.push(<image key="alarm" href="assets/alarm.png" height={baseSize * 0.10} width={baseSize * 0.10} x={baseSize * 0.79} y={(baseSize * .17) / 2}/>)
+    }
+    if (props.data.silence) {
+        elements.push(<image key="mute" href="assets/mute.svg" height={baseSize * 0.10} width={baseSize * 0.10} x={baseSize * 0.79} y={(baseSize * (.17 + (props.data.alarm ? .25 : 0))) / 2}/>)
     }
     return <g transform={`translate(0, ${props.idx * (spaceH+1) + yOffset})`}>{elements}</g>
 }

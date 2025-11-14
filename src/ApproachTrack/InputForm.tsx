@@ -1,41 +1,48 @@
 import { Card, Checkbox, Collapse, Form, Input, InputNumber, Radio, RadioChangeEvent, Select, Space, Switch, Typography } from "antd";
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { Module, SpaceData, TrackData, Turns } from "./types";
 import { replace } from "typescript-array-utils";
+import { Module, SpaceData, TrackData, Turns } from "./types";
 
 interface ModuleOption {
     label: string
-    value: string
-    excludes?: string
+    value: Module
+    excludes?: [Module]
+    order?: number
 }
 const modules: ModuleOption[] = [
     {
         label: "1 Special ability",
-        value: "skill1",
+        value: Module.skill1,
+        excludes: [Module.skill2],
+        order: -1
     },
     {
         label: "2 Special abilities",
-        value: "skill2",
+        value: Module.skill2,
+        excludes: [Module.skill1],
+        order: -1
     },
     {
         label: "Ice brakes",
-        value: "ice"
+        value: Module.ice
     },
     {
         label: "Intern",
-        value: "intern"
+        value: Module.intern
     },
     {
         label: "Kerosene",
-        value: "fuel"
+        value: Module.fuel,
+        excludes: [Module.leak]
     },
     {
         label: "Kerosene leak",
-        value: "leak"
+        value: Module.leak,
+        excludes: [Module.fuel]
     },
     {
         label: "Wind",
-        value: "wind"
+        value: Module.wind
     },
 ]
 
@@ -51,7 +58,22 @@ export function InputForm(props: { data: TrackData, onChange: (s: TrackData) => 
         props.onChange(Object.assign({}, props.data, { spaces: replace(props.data.spaces, idx, value) }))
     }
     const onModuleChange = (val: Module[], option: ModuleOption | ModuleOption[]) => {
-        props.onChange(Object.assign({}, props.data, {modules: val}))
+        let options = option instanceof Array ? option : [option]
+        
+        const exclude = options.filter((moduleOpt) => {
+            return props.data.modules.indexOf(moduleOpt.value) === -1;
+        }).reduce((prev, curr) => {
+            return prev.concat(...(curr.excludes || []))
+        }, [] as Module[])
+        
+        options = options.filter((val) => {
+            return exclude.indexOf(val.value) === -1;
+        })
+        options.sort((a, b) => {
+            return (b.order || 0) - (a.order || 0)
+        })
+
+        props.onChange(Object.assign({}, props.data, {modules: options.map(o => o.value)}))
     }
     const onColorChange = (e: RadioChangeEvent) => {
         props.onChange(Object.assign({}, props.data, {color: e.target.value ? e.target.value : null}))
@@ -135,6 +157,11 @@ function SpaceInputForm(props: { space: SpaceData, idx: number, onChange: (s: Sp
         <Form.Item name={`alarm`} label="Alarm">
             <Checkbox checked={props.space.alarm} style={{margin: 2}} onChange={(e) => {
                 props.onChange(Object.assign({}, s, { alarm: e.target.checked }))
+            }}/>
+        </Form.Item>
+        <Form.Item name={`total trust`} label="Total trust">
+            <Checkbox checked={props.space.totalTrust} style={{margin: 2}} onChange={(e) => {
+                props.onChange(Object.assign({}, s, { totalTrust: e.target.checked }))
             }}/>
         </Form.Item>
     </Card>

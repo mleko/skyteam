@@ -7,11 +7,10 @@
   @page {
     size: A4;
     margin: 0;
-    margin: 15mm;
   }
   body {
-      /* width: 210mm; */
-      /* height: 297mm; */
+      width: 210mm;
+      height: 297mm;
       print-color-adjust: exact;
       -webkit-print-color-adjust: exact;
   }
@@ -23,6 +22,7 @@
       box-shadow: initial;
       background: initial;
       page-break-after: always;
+      margin: 0;
   }
 
   .hidden-print {

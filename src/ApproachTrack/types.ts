@@ -11,6 +11,7 @@ export interface SpaceData {
     trafficDice?: number
     turns: Turns
     alarm?: boolean
+    totalTrust?: boolean
 }
 
 export enum Module {
