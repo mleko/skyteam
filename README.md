@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Skyteam tracks generator
+
+Approach and altitude tracks generator for Skyteam https://boardgamegeek.com/boardgame/373106/sky-team.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
