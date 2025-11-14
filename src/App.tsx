@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
 import { ConfigProvider, Layout, theme } from "antd";
+import { GithubOutlined, TeamOutlined } from '@ant-design/icons';
 
 import { ApproachTrack, TrackData as ApproachTrackData, sampleTrack as sampleApproachTrack } from "./ApproachTrack"
 import { AltitudeTrack, TrackData as AltitudeTrackData } from "./AltitudeTrack"
 import { Tracks } from "./Tracks";
 import { loadURL, setURL } from "./url";
+import { Footer } from "antd/es/layout/layout";
 
 export interface TracksData {
   approach: ApproachTrackData[]
@@ -27,6 +29,9 @@ function App() {
     >
       <Layout className="hidden-print">
         <Tracks tracks={tracks} setTracks={setTracksData} />
+        <Footer>
+          <a href="https://github.com/mleko/skyteam" style={{color: "#333"}}><GithubOutlined /> https://github.com/mleko/skyteam</a> <a href="https://krol.me" style={{color: "#333"}}><TeamOutlined/>https://krol.me</a>
+        </Footer>
       </Layout>
       <div className="only-print">
         {renderPrint(tracks)}
